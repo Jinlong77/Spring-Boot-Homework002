@@ -5,6 +5,7 @@ import org.kshrd.homework002.exception.ResourceNotFoundException;
 import org.kshrd.homework002.model.dto.request.StudentRequest;
 import org.kshrd.homework002.model.entity.StudentEntity;
 import org.kshrd.homework002.repository.StudentRepository;
+import org.kshrd.homework002.service.CourseService;
 import org.kshrd.homework002.service.StudentService;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final CourseService courseService;
 
     @Override
     public List<StudentEntity> getAllStudentsPagination(int page, int size) {
@@ -37,9 +39,12 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentEntity createStudent(StudentRequest studentRequest) {
         var student = studentRepository.save(studentRequest);
-        if (student < 1) throw new ResourceNotFoundException("Student with cannot be created.");
-        studentRequest.getCourseIds().forEach(courseId -> studentRepository.insertIntoStudentCourse(student, courseId));
-        return studentRepository.findById(student);
+        if (student == null) throw new ResourceNotFoundException("Student with cannot be created.");
+        studentRequest.getCourseIds().forEach(courseId -> {
+            var course = courseService.getCourseById(courseId);
+            if (course != null) studentRepository.insertIntoStudentCourse(student.getStudentId(), courseId);
+        });
+        return studentRepository.findById(student.getStudentId());
     }
 
     @Override

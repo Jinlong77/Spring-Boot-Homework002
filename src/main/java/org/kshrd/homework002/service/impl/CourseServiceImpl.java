@@ -7,6 +7,7 @@ import org.kshrd.homework002.model.dto.request.CourseRequest;
 import org.kshrd.homework002.model.entity.CourseEntity;
 import org.kshrd.homework002.repository.CourseRepository;
 import org.kshrd.homework002.service.CourseService;
+import org.kshrd.homework002.service.InstructorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final InstructorService instructorService;
 
     @Override
     public List<CourseEntity> getAllCoursesByPagination(int page, int size) {
@@ -31,6 +33,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseEntity createCourse(CourseRequest courseRequest) {
+        instructorService.getInstructorById(courseRequest.getInstructorId());
         var course = courseRepository.save(courseRequest);
         if (course == null) throw new ApiException("Course cannot be created.");
         return course;
@@ -38,6 +41,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseEntity updateCourse(int id, CourseRequest courseRequest) {
+        instructorService.getInstructorById(courseRequest.getInstructorId());
         getCourseById(id);
         var course = courseRepository.update(id, courseRequest);
         if (course == null) throw new ApiException("Course cannot be updated.");

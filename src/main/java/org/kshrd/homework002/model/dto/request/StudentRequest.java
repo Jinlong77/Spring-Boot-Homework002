@@ -19,6 +19,7 @@ public class StudentRequest {
     private String email;
 
     @NotNull(message = "Phone number is required")
+    @Pattern(regexp = "^0\\d{8,9}$", message = "Invalid phone number")
     private String phoneNumber;
 
     @NotNull(message = "Course Ids are required")

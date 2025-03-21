@@ -38,7 +38,7 @@ public interface StudentRepository {
         RETURNING *
     """)
     @ResultMap("studentResult")
-    int save(@Param("s") StudentRequest student);
+    StudentEntity save(@Param("s") StudentRequest student);
 
     @Delete("""
         DELETE FROM students

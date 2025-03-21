@@ -39,10 +39,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationExceptions(HttpServletRequest request, MethodArgumentNotValidException ex) {
-        var detail = ProblemDetail.forStatusAndDetail(BAD_REQUEST, "Validation Failed");
+        var detail = ProblemDetail.forStatus(BAD_REQUEST);
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getGlobalErrors().forEach(error -> {
-            errors.put(error.getObjectName(), error.getDefaultMessage());
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
         });
         detail.setProperty("timestamp", LocalDateTime.now());
         detail.setProperty("errors", errors);
