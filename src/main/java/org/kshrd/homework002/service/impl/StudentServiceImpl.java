@@ -52,7 +52,8 @@ public class StudentServiceImpl implements StudentService {
         getStudentById(id);
         studentRepository.deleteStudentCourse(id);
         studentRequest.getCourseIds().forEach(courseId -> {
-            studentRepository.insertIntoStudentCourse(id, courseId);
+            var course = courseService.getCourseById(courseId);
+            if (course != null) studentRepository.insertIntoStudentCourse(id, courseId);
         });
         return studentRepository.findById(id);
     }
